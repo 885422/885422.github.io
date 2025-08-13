@@ -1,30 +1,34 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
+<html lang="zh-CN"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>关于 - 龙珠音乐播放器</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
   
-  <!-- 配置Tailwind自定义主题 -->
+  <!-- 配置Tailwind自定义主题 - 科幻风格配色 -->
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            primary: '#7c3aed', // 主色调：紫色
-            secondary: '#ec4899', // 辅助色：粉色
-            dark: '#0f172a', // 深色背景
-            light: '#f8fafc', // 浅色文本
+            primary: '#00f0ff', // 霓虹蓝作为主色调
+            secondary: '#9d4edd', // 科幻紫作为辅助色
+            accent: '#ff355e', // 霓虹红作为强调色
+            dark: '#050a1a', // 深邃太空黑
+            light: '#e6f7ff', // 冷光蓝文本
+            grid: 'rgba(0, 240, 255, 0.1)', // 网格线颜色
           },
           fontFamily: {
+            cyber: ['"Orbitron"', 'sans-serif'],
             inter: ['Inter', 'system-ui', 'sans-serif'],
           },
         },
       }
     }
   </script>
+  
+  <!-- 引入科幻风格字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&amp;display=swap" rel="stylesheet">
   
   <style type="text/tailwindcss">
     @layer utilities {
@@ -37,102 +41,259 @@
         -webkit-text-fill-color: transparent;
       }
       .glass-effect {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(5, 10, 26, 0.6);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(0, 240, 255, 0.2);
+        box-shadow: 0 0 30px rgba(0, 240, 255, 0.1);
       }
+      .neon-glow {
+        box-shadow: 0 0 10px theme('colors.primary'), 
+                    0 0 20px theme('colors.primary/50'),
+                    0 0 30px theme('colors.primary/30');
+      }
+      .neon-glow-secondary {
+        box-shadow: 0 0 10px theme('colors.secondary'), 
+                    0 0 20px theme('colors.secondary/50');
+      }
+      .animate-float {
+        animation: float 8s ease-in-out infinite;
+      }
+      .animate-pulse-slow {
+        animation: pulse 5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      .animate-scan {
+        background: linear-gradient(to bottom, 
+                    transparent 0%, 
+                    rgba(0, 240, 255, 0.2) 50%, 
+                    transparent 100%);
+        background-size: 100% 200%;
+        animation: scan 4s linear infinite;
+      }
+      .grid-bg {
+        background-size: 40px 40px;
+        background-image: 
+          linear-gradient(to right, theme('colors.grid') 1px, transparent 1px),
+          linear-gradient(to bottom, theme('colors.grid') 1px, transparent 1px);
+      }
+      .hologram {
+        position: relative;
+        overflow: hidden;
+      }
+      .hologram::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to right,
+          rgba(0, 240, 255, 0) 0%,
+          rgba(0, 240, 255, 0.3) 50%,
+          rgba(0, 240, 255, 0) 100%
+        );
+        transform: rotate(30deg);
+        animation: hologramShift 6s linear infinite;
+      }
+    }
+    
+    @keyframes float {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(2deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+    
+    @keyframes scan {
+      0% { background-position: 0 -100%; }
+      100% { background-position: 0 100%; }
+    }
+    
+    @keyframes hologramShift {
+      0% { transform: rotate(30deg) translateX(-100%); }
+      100% { transform: rotate(30deg) translateX(100%); }
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-dark to-gray-900 text-light font-inter min-h-screen">
-  <!-- 顶部导航 -->
-  <header class="glass-effect fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-      <div class="flex items-center space-x-2">
-        <i class="fa fa-music text-2xl text-gradient bg-gradient-to-r from-primary to-secondary"></i>
-        <h1 class="text-xl md:text-2xl font-bold text-gradient bg-gradient-to-r from-primary to-secondary">
-          龙珠音乐播放器
+<body class="bg-gradient-to-br from-dark via-gray-900 to-slate-950 text-light font-inter min-h-screen overflow-x-hidden grid-bg relative">
+  <!-- 科幻扫描线效果 -->
+  <div class="fixed inset-0 z-0 opacity-20 pointer-events-none animate-scan"></div>
+  
+  <!-- 动态背景元素 - 能量球和科技粒子 -->
+  <div class="fixed inset-0 z-0 opacity-30 pointer-events-none">
+    <div class="absolute top-[10%] left-[5%] w-16 h-16 rounded-full bg-primary/30 animate-float" style="animation-delay: 0s;"></div>
+    <div class="absolute top-[20%] right-[15%] w-10 h-10 rounded-full bg-secondary/30 animate-float" style="animation-delay: 1s;"></div>
+    <div class="absolute bottom-[30%] left-[20%] w-12 h-12 rounded-full bg-accent/30 animate-float" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-8 h-8 rounded-full bg-primary/30 animate-float" style="animation-delay: 3s;"></div>
+    <div class="absolute top-[40%] left-[40%] w-14 h-14 rounded-full bg-secondary/30 animate-float" style="animation-delay: 4s;"></div>
+    
+    <!-- 科技感线条 -->
+    <div class="absolute top-0 left-1/4 h-full w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent"></div>
+    <div class="absolute top-0 left-2/4 h-full w-px bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
+    <div class="absolute top-0 left-3/4 h-full w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent"></div>
+    <div class="absolute top-1/4 left-0 h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+    <div class="absolute top-2/4 left-0 h-px w-full bg-gradient-to-r from-transparent via-primary/20 to-transparent"></div>
+    <div class="absolute top-3/4 left-0 h-px w-full bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+  </div>
+
+  <!-- 顶部导航 - 科技感设计 -->
+  <header class="glass-effect fixed top-0 left-0 right-0 z-50 transition-all duration-500 border-b border-primary/20">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <i class="fa fa-music text-3xl text-gradient bg-gradient-to-r from-primary to-secondary animate-pulse-slow"></i>
+        <h1 class="text-2xl md:text-3xl font-bold font-cyber text-gradient bg-gradient-to-r from-primary to-secondary tracking-wider">
+          龙珠音乐系统
         </h1>
       </div>
       
-      <div class="flex items-center space-x-4">
-        <a href="index.html" class="p-2 hover:text-primary transition-colors">
-          <i class="fa fa-home text-xl"></i>
+      <div class="flex items-center space-x-6">
+        <a href="index.html" class="p-2 hover:text-primary transition-all duration-300 transform hover:scale-110 relative group">
+          <i class="fa fa-home text-2xl"></i>
+          <span class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#" class="p-2 text-primary transition-all duration-300 transform hover:scale-110 relative">
+          <i class="fa fa-info-circle text-2xl"></i>
+          <span class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-full h-0.5 bg-primary"></span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- 主内容区 -->
-  <main class="container mx-auto px-4 pt-24 pb-16">
-    <div class="max-w-md mx-auto glass-effect rounded-xl p-6 mt-8">
-      <h2 class="text-2xl font-bold mb-6 text-center text-gradient bg-gradient-to-r from-primary to-secondary">关于我们</h2>
+  <!-- 主内容区 - 全息投影风格卡片 -->
+  <main class="container mx-auto px-4 pt-32 pb-24 relative z-10">
+    <div class="max-w-md mx-auto glass-effect rounded-2xl p-8 mt-8 transform transition-all duration-500 hover:scale-[1.02] hover:neon-glow hologram">
+      <!-- 科幻标题栏 -->
+      <div class="flex items-center justify-between mb-6 pb-4 border-b border-primary/30">
+        <h2 class="text-3xl font-bold font-cyber text-gradient bg-gradient-to-r from-primary to-secondary tracking-wide">关于我们</h2>
+        <div class="text-xs text-primary/70 font-mono">
+          系统版本 1.0.2
+        </div>
+      </div>
       
+      <!-- 龙珠相关文字 - 科幻风格呈现 -->
+      <div class="text-center text-gray-200 mb-8 leading-relaxed text-lg md:text-xl space-y-3 font-cyber">
+        <p class="transform transition-all duration-300 hover:scale-105 hover:text-primary">龙珠的世界 无限广阔</p>
+        <p class="transform transition-all duration-300 hover:scale-105 hover:text-primary">冒险的旅程 现在开始</p>
+        <p class="transform transition-all duration-300 hover:scale-105 hover:text-primary">收集七颗龙珠 就能实现愿望</p>
+        <p class="transform transition-all duration-300 hover:scale-105 hover:text-primary">朋友啊 一起出发吧</p>
+      </div>
+      
+      <!-- 全息龙珠图像 -->
+      <div class="flex justify-center my-6">
+        <div class="w-24 h-24 rounded-full bg-primary/20 border-2 border-primary flex items-center justify-center shadow-lg shadow-primary/30 animate-pulse-slow relative overflow-hidden">
+          <span class="font-cyber text-primary text-2xl relative z-10">7</span>
+          <!-- 能量环效果 -->
+          <div class="absolute inset-0 rounded-full border-2 border-primary/50 animate-pulse"></div>
+          <div class="absolute inset-[-10px] rounded-full border border-primary/30 animate-pulse" style="animation-delay: 1s;"></div>
+          <div class="absolute inset-[-20px] rounded-full border border-primary/10 animate-pulse" style="animation-delay: 2s;"></div>
+        </div>
+      </div>
+      
+      <!-- 联系信息 - 类似数据面板 -->
       <div class="space-y-6">
-        <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+        <div class="flex items-center justify-between p-5 bg-gray-800/20 rounded-xl border border-primary/10 transition-all duration-300 hover:bg-gray-800/40 hover:translate-x-1 hover:border-primary/30">
           <div class="flex items-center">
-            <i class="fa fa-users text-primary text-xl mr-3"></i>
-            <span class="font-medium">QQ讨论群</span>
+            <i class="fa fa-users text-primary text-2xl mr-4"></i>
+            <span class="font-medium text-lg font-cyber">QQ讨论群</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <span id="group-qq" class="text-gray-300">673778042</span>
-            <button onclick="copyToClipboard('673778042', this)" class="p-1.5 rounded hover:bg-primary/20 transition-colors">
-              <i class="fa fa-copy text-sm"></i>
+          <div class="flex items-center space-x-3">
+            <span id="group-qq" class="text-gray-200 font-mono bg-gray-900/50 px-2 py-1 rounded border border-primary/20">673778042</span>
+            <button onclick="copyToClipboard('673778042', this)" class="p-2 rounded-full hover:bg-primary/20 transition-all duration-300 transform hover:scale-110">
+              <i class="fa fa-copy text-lg"></i>
             </button>
           </div>
         </div>
         
-        <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+        <div class="flex items-center justify-between p-5 bg-gray-800/20 rounded-xl border border-primary/10 transition-all duration-300 hover:bg-gray-800/40 hover:translate-x-1 hover:border-primary/30">
           <div class="flex items-center">
-            <i class="fa fa-user text-primary text-xl mr-3"></i>
-            <span class="font-medium">作者QQ</span>
+            <i class="fa fa-user text-primary text-2xl mr-4"></i>
+            <span class="font-medium text-lg font-cyber">作者QQ</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <span id="author-qq" class="text-gray-300">1183265081</span>
-            <button onclick="copyToClipboard('1183265081', this)" class="p-1.5 rounded hover:bg-primary/20 transition-colors">
-              <i class="fa fa-copy text-sm"></i>
+          <div class="flex items-center space-x-3">
+            <span id="author-qq" class="text-gray-200 font-mono bg-gray-900/50 px-2 py-1 rounded border border-primary/20">1183265081</span>
+            <button onclick="copyToClipboard('1183265081', this)" class="p-2 rounded-full hover:bg-primary/20 transition-all duration-300 transform hover:scale-110">
+              <i class="fa fa-copy text-lg"></i>
             </button>
           </div>
         </div>
         
-        <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+        <div class="flex items-center justify-between p-5 bg-gray-800/20 rounded-xl border border-primary/10 transition-all duration-300 hover:bg-gray-800/40 hover:translate-x-1 hover:border-primary/30">
           <div class="flex items-center">
-            <i class="fa fa-code text-primary text-xl mr-3"></i>
-            <span class="font-medium">技术者QQ</span>
+            <i class="fa fa-code text-primary text-2xl mr-4"></i>
+            <span class="font-medium text-lg font-cyber">技术者QQ</span>
           </div>
-          <div class="flex items-center space-x-2">
-            <span id="tech-qq" class="text-gray-300">1499385382</span>
-            <button onclick="copyToClipboard('1499385382', this)" class="p-1.5 rounded hover:bg-primary/20 transition-colors">
-              <i class="fa fa-copy text-sm"></i>
+          <div class="flex items-center space-x-3">
+            <span id="tech-qq" class="text-gray-200 font-mono bg-gray-900/50 px-2 py-1 rounded border border-primary/20">1499385382</span>
+            <button onclick="copyToClipboard('1499385382', this)" class="p-2 rounded-full hover:bg-primary/20 transition-all duration-300 transform hover:scale-110">
+              <i class="fa fa-copy text-lg"></i>
             </button>
           </div>
         </div>
       </div>
       
-      <div class="mt-8 text-center text-gray-400 text-sm">
-        <p>© 2025 龙珠音乐播放器 版权所有</p>
+      <!-- 科幻风格文字区域（已移除按钮） -->
+      <div class="mt-10 pt-6 border-t border-primary/20">
+        <div class="text-center">
+          <p class="text-gradient bg-gradient-to-r from-secondary to-primary font-medium mb-4 font-cyber">加入我们，一起探索龙珠的音乐世界！</p>
+        </div>
+      </div>
+      
+      <!-- 页脚 - 类似终端信息 -->
+      <div class="mt-10 text-center text-primary/50 text-sm font-mono">
+        <p>© 2025 龙珠音乐系统 | 数据库版本 7.0.0 | 最后更新: 2025.08.13</p>
       </div>
     </div>
   </main>
   
   <script>
-    // 复制到剪贴板功能
+    // 复制到剪贴板功能 - 科幻风格反馈
     function copyToClipboard(text, button) {
       navigator.clipboard.writeText(text).then(() => {
-        // 显示复制成功的反馈
+        // 保存原始状态
         const originalIcon = button.innerHTML;
-        button.innerHTML = '<i class="fa fa-check text-sm"></i>';
-        button.classList.add('text-secondary');
+        const originalColor = button.style.color;
+        
+        // 显示复制成功的反馈 - 科幻效果
+        button.innerHTML = '<i class="fa fa-check text-lg"></i>';
+        button.style.color = '#00f0ff';
+        button.classList.add('scale-125');
+        button.classList.add('neon-glow');
+        
+        // 添加数据传输效果
+        const pulseEffect = document.createElement('div');
+        pulseEffect.className = 'absolute w-full h-full rounded-full border border-primary animate-ping opacity-75';
+        pulseEffect.style.top = '0';
+        pulseEffect.style.left = '0';
+        pulseEffect.style.pointerEvents = 'none';
+        button.parentNode.appendChild(pulseEffect);
         
         setTimeout(() => {
+          // 恢复原始状态
           button.innerHTML = originalIcon;
-          button.classList.remove('text-secondary');
+          button.style.color = originalColor;
+          button.classList.remove('scale-125');
+          button.classList.remove('neon-glow');
+          pulseEffect.remove();
         }, 2000);
       }).catch(err => {
-        console.error('无法复制文本: ', err);
+        console.error('数据传输失败: ', err);
         alert('复制失败，请手动复制');
       });
     }
+    
+    // 滚动时改变导航栏样式 - 增强科幻感
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('header');
+      if (window.scrollY > 50) {
+        header.classList.add('py-2');
+        header.classList.remove('py-4');
+        header.classList.add('neon-glow');
+      } else {
+        header.classList.add('py-4');
+        header.classList.remove('py-2');
+        header.classList.remove('neon-glow');
+      }
+    });
   </script>
-</body>
-</html>
+
+
+</body></html>
